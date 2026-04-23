@@ -326,6 +326,7 @@ function syncStateWithCatalog() {
 }
 
 async function refreshProducts({ forceReload = false } = {}) {
+  lastProductsSync = Date.now();
   const latest = await loadProducts();
   const signature = getProductsSignature(latest);
 
@@ -342,10 +343,17 @@ async function refreshProducts({ forceReload = false } = {}) {
 
 let liveSyncStarted = false;
 let liveSyncIntervalId = null;
+let lastProductsSync = 0;
 
 function handleVisibilityChange() {
   if (document.visibilityState === "visible") {
-    refreshProducts({ forceReload: true });
+    startProductInterval();
+
+    if (Date.now() - lastProductsSync > PRODUCT_REFRESH_INTERVAL) {
+      refreshProducts({ forceReload: true });
+    }
+  } else {
+    stopProductInterval();
   }
 }
 
@@ -368,11 +376,27 @@ function handleStorageEvent(event) {
   }
 }
 
-function cleanupLiveSync() {
+function startProductInterval() {
   if (liveSyncIntervalId !== null) {
-    window.clearInterval(liveSyncIntervalId);
-    liveSyncIntervalId = null;
+    return;
   }
+
+  liveSyncIntervalId = window.setInterval(() => {
+    refreshProducts();
+  }, PRODUCT_REFRESH_INTERVAL);
+}
+
+function stopProductInterval() {
+  if (liveSyncIntervalId === null) {
+    return;
+  }
+
+  window.clearInterval(liveSyncIntervalId);
+  liveSyncIntervalId = null;
+}
+
+function cleanupLiveSync() {
+  stopProductInterval();
 
   document.removeEventListener("visibilitychange", handleVisibilityChange);
   window.removeEventListener("storage", handleStorageEvent);
@@ -386,9 +410,7 @@ function setupLiveSync() {
   }
 
   liveSyncStarted = true;
-  liveSyncIntervalId = window.setInterval(() => {
-    refreshProducts();
-  }, PRODUCT_REFRESH_INTERVAL);
+  startProductInterval();
 
   document.addEventListener("visibilitychange", handleVisibilityChange);
   window.addEventListener("storage", handleStorageEvent);
@@ -876,6 +898,7 @@ async function init() {
   state.products = await loadProducts();
   productsSignature = getProductsSignature(state.products);
   syncStateWithCatalog();
+  lastProductsSync = Date.now();
 
   refs.couponInput.value = state.coupon || "";
   refs.cepInput.value = state.cep;
