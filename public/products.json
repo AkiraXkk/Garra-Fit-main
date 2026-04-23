@@ -1,0 +1,102 @@
+[
+  {
+    "id": "whey-900",
+    "name": "Whey Protein 900g",
+    "category": "suplementos",
+    "description": "Blend proteico para recuperacao muscular e ganho de massa.",
+    "price": 135,
+    "stock": 11,
+    "featured": 1,
+    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
+  },
+  {
+    "id": "creatina-300",
+    "name": "Creatina Monohidratada 300g",
+    "category": "suplementos",
+    "description": "Potencia e resistencia para treinos intensos.",
+    "price": 89.9,
+    "stock": 16,
+    "featured": 2,
+    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
+  },
+  {
+    "id": "pre-treino-300",
+    "name": "Pre-Treino Insano 300g",
+    "category": "suplementos",
+    "description": "Foco e energia para iniciar o treino no maximo.",
+    "price": 78,
+    "stock": 9,
+    "featured": 3,
+    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
+  },
+  {
+    "id": "bcaa-4-1-1",
+    "name": "BCAA 4:1:1 120 caps",
+    "category": "suplementos",
+    "description": "Auxilia na recuperacao muscular e protecao contra catabolismo.",
+    "price": 62.5,
+    "stock": 14,
+    "featured": 4,
+    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
+  },
+  {
+    "id": "combo-massa",
+    "name": "Combo Ganho de Massa",
+    "category": "combos",
+    "description": "Whey + Creatina + Coqueteleira com desconto especial.",
+    "price": 249.9,
+    "stock": 7,
+    "featured": 5,
+    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
+  },
+  {
+    "id": "combo-definicao",
+    "name": "Combo Definicao",
+    "category": "combos",
+    "description": "Termogenico + Whey Isolado para acelerar resultados.",
+    "price": 269,
+    "stock": 6,
+    "featured": 6,
+    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
+  },
+  {
+    "id": "combo-energia",
+    "name": "Combo Energia e Resistencia",
+    "category": "combos",
+    "description": "Pre-treino + BCAA + Garra Bottle para treinos longos.",
+    "price": 189,
+    "stock": 8,
+    "featured": 7,
+    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
+  },
+  {
+    "id": "coqueteleira-pro",
+    "name": "Coqueteleira Pro 700ml",
+    "category": "acessorios",
+    "description": "Sem vazamentos, resistente e ideal para o dia a dia.",
+    "price": 39.9,
+    "stock": 20,
+    "featured": 8,
+    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
+  },
+  {
+    "id": "strap-power",
+    "name": "Strap de Levantamento",
+    "category": "acessorios",
+    "description": "Mais firmeza para puxadas e levantamento terra.",
+    "price": 29.9,
+    "stock": 18,
+    "featured": 9,
+    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
+  },
+  {
+    "id": "luva-grip",
+    "name": "Luva Grip Cross",
+    "category": "acessorios",
+    "description": "Conforto e protecao para treinos pesados.",
+    "price": 49.9,
+    "stock": 13,
+    "featured": 10,
+    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
+  }
+]
