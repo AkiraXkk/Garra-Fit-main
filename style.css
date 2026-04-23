@@ -208,38 +208,6 @@ main,
   object-fit: contain;
 }
 
-.controls {
-  margin-top: 1.4rem;
-  display: grid;
-  gap: 0.8rem;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.controls__field {
-  display: grid;
-  gap: 0.35rem;
-  font-size: 0.9rem;
-  font-weight: 700;
-}
-
-.controls__field--inline {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--light);
-  justify-content: center;
-  min-height: 44px;
-  margin-top: auto;
-}
-
-.controls__field--inline input {
-  width: auto;
-}
-
-.controls input,
-.controls select,
 .coupon-field input,
 .coupon-field select {
   width: 100%;
@@ -320,9 +288,6 @@ main,
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.products-grid .card:nth-child(n + 4) {
-  display: none;
-}
 
 .card {
   display: grid;
