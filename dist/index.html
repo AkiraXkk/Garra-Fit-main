@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Loja online Garra Fit com suplementos, acessórios e combos para alta performance."
+    />
+    <title>Garra Fit | Loja de Suplementos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" crossorigin href="/assets/index-BJA0FUKP.css">
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <a href="#" class="brand" aria-label="Início Garra Fit">
+        <span class="brand__mark">GF</span>
+        <span class="brand__text">Garra Fit</span>
+      </a>
+
+      <nav class="topbar__actions" aria-label="Ações principais">
+        <button class="icon-btn" id="openAdmin" type="button" aria-label="Abrir painel administrativo">
+          Admin
+        </button>
+        <button class="icon-btn" id="openCart" type="button" aria-label="Abrir carrinho">
+          Carrinho
+          <span class="badge" id="cartCount">0</span>
+        </button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero__content">
+          <p class="hero__kicker">Entrega em Gravatá e região</p>
+          <h1>Suplementos de verdade para resultados de verdade.</h1>
+          <p>
+            Monte seu pedido em segundos, aplique cupom e finalize no WhatsApp.
+            Tudo em uma experiência rápida e funcional.
+          </p>
+          <div class="hero__cta-row">
+            <a href="#produtos" class="cta cta--primary">Ver produtos</a>
+            <button class="cta cta--ghost" id="scrollToOffers" type="button">Ofertas do dia</button>
+          </div>
+        </div>
+        <div class="hero__panel" aria-hidden="true">
+          <h2>10% OFF no PIX</h2>
+          <p>Frete grátis acima de R$ 159 em Gravatá.</p>
+          <ul>
+            <li>Whey, Creatina e Pré-treino</li>
+            <li>Kits para ganho de massa</li>
+            <li>Acessórios de treino</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="controls" id="produtos" aria-label="Filtros de produtos">
+        <label class="controls__field">
+          <span>Buscar produto</span>
+          <input type="search" id="searchInput" placeholder="Ex: whey, creatina, kit" />
+        </label>
+
+        <label class="controls__field">
+          <span>Categoria</span>
+          <select id="categorySelect">
+            <option value="all">Todas</option>
+            <option value="suplementos">Suplementos</option>
+            <option value="combos">Combos</option>
+            <option value="acessorios">Acessórios</option>
+          </select>
+        </label>
+
+        <label class="controls__field">
+          <span>Ordenar</span>
+          <select id="sortSelect">
+            <option value="featured">Destaques</option>
+            <option value="price-asc">Menor preço</option>
+            <option value="price-desc">Maior preço</option>
+            <option value="name">Nome (A-Z)</option>
+          </select>
+        </label>
+
+        <label class="controls__field controls__field--inline" for="favoriteOnly">
+          <input type="checkbox" id="favoriteOnly" />
+          <span>Somente favoritos</span>
+        </label>
+      </section>
+
+      <section aria-live="polite">
+        <p class="results" id="resultsCount">0 produtos encontrados</p>
+        <div class="products-grid" id="productGrid"></div>
+      </section>
+    </main>
+
+    <aside class="cart" id="cart" aria-label="Carrinho de compras" aria-hidden="true">
+      <div class="cart__header">
+        <h2>Seu carrinho</h2>
+        <button class="icon-btn icon-btn--small" id="closeCart" type="button" aria-label="Fechar carrinho">
+          Fechar
+        </button>
+      </div>
+
+      <div class="cart__items" id="cartItems"></div>
+
+      <div class="cart__footer">
+        <label class="coupon-field" for="cepInput">
+          CEP para entrega
+          <input id="cepInput" type="text" placeholder="Ex: 55641-230" maxlength="9" />
+        </label>
+        <button class="cta cta--ghost" id="calcShipping" type="button">Calcular frete</button>
+        <p class="shipping-note" id="shippingNote">Informe o CEP para simular entrega.</p>
+
+        <label class="coupon-field" for="paymentSelect">
+          Pagamento
+          <select id="paymentSelect">
+            <option value="pix">PIX (10% OFF)</option>
+            <option value="credit">Cartao de credito</option>
+            <option value="debit">Cartao de debito</option>
+          </select>
+        </label>
+
+        <label class="coupon-field" for="couponInput">
+          Cupom
+          <input id="couponInput" type="text" placeholder="Digite: GARRA10" />
+        </label>
+        <button class="cta cta--ghost" id="applyCoupon" type="button">Aplicar cupom</button>
+        <div class="free-ship-progress">
+          <p><span id="freeShipText">Faltam R$ 159,00 para frete gratis.</span></p>
+          <div class="free-ship-progress__bar" aria-hidden="true">
+            <span id="freeShipBar"></span>
+          </div>
+        </div>
+        <div class="totals">
+          <p>Subtotal <strong id="subtotalValue">R$ 0,00</strong></p>
+          <p>Desconto <strong id="discountValue">R$ 0,00</strong></p>
+          <p>Frete <strong id="shippingValue">R$ 0,00</strong></p>
+          <p class="totals__final">Total <strong id="totalValue">R$ 0,00</strong></p>
+        </div>
+        <button class="cta cta--primary" id="checkoutButton" type="button">
+          Finalizar no WhatsApp
+        </button>
+      </div>
+    </aside>
+
+    <aside class="admin" id="adminPanel" aria-label="Painel administrativo" aria-hidden="true">
+      <div class="admin__header">
+        <h2>Painel Admin</h2>
+        <button class="icon-btn icon-btn--small" id="closeAdmin" type="button" aria-label="Fechar painel administrativo">
+          Fechar
+        </button>
+      </div>
+
+      <div class="admin__body">
+        <section id="adminLoginSection">
+          <p class="admin__hint">Acesso restrito para administradores da loja.</p>
+          <label class="coupon-field" for="adminPasswordInput">
+            Senha admin
+            <input id="adminPasswordInput" type="password" placeholder="Digite a senha" />
+          </label>
+          <button class="cta cta--primary" id="adminLoginButton" type="button">Entrar</button>
+        </section>
+
+        <section id="adminSettingsSection" hidden>
+          <p class="admin__hint">Logado. Use as opcoes abaixo para manutencao.</p>
+
+          <label class="coupon-field" for="adminCurrentPassword">
+            Senha atual
+            <input id="adminCurrentPassword" type="password" placeholder="Senha atual" />
+          </label>
+          <label class="coupon-field" for="adminNewPassword">
+            Nova senha
+            <input id="adminNewPassword" type="password" placeholder="Nova senha (min 8 caracteres)" />
+          </label>
+          <label class="coupon-field" for="adminConfirmPassword">
+            Confirmar nova senha
+            <input id="adminConfirmPassword" type="password" placeholder="Confirme a nova senha" />
+          </label>
+
+          <button class="cta cta--ghost" id="changeAdminPasswordButton" type="button">
+            Alterar senha
+          </button>
+          <button class="cta cta--primary" id="adminLogoutButton" type="button">
+            Sair do painel
+          </button>
+        </section>
+      </div>
+    </aside>
+
+    <div class="backdrop" id="backdrop" hidden></div>
+
+    <template id="productTemplate">
+      <article class="card">
+        <figure class="card__media">
+          <img loading="lazy" alt="" />
+        </figure>
+        <div class="card__body">
+          <p class="card__category"></p>
+          <h3 class="card__title"></h3>
+          <p class="card__description"></p>
+          <div class="card__price-row">
+            <p class="card__price"></p>
+            <p class="card__stock"></p>
+          </div>
+          <button class="favorite-btn" type="button" aria-label="Favoritar produto">☆ Favoritar</button>
+          <button class="cta cta--primary card__button" type="button">Adicionar</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
