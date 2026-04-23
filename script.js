@@ -326,16 +326,17 @@ function syncStateWithCatalog() {
 }
 
 async function refreshProducts({ forceReload = false } = {}) {
-  lastProductsSync = Date.now();
   const latest = await loadProducts();
   const signature = getProductsSignature(latest);
 
   if (!forceReload && signature === productsSignature) {
+    lastProductsSync = Date.now();
     return;
   }
 
   state.products = latest;
   productsSignature = signature;
+  lastProductsSync = Date.now();
   syncStateWithCatalog();
   renderProducts();
   renderCart();
@@ -362,7 +363,7 @@ function handleStorageEvent(event) {
     if (event.newValue) {
       loadStore();
     } else {
-      resetStoreState({ persist: true });
+      resetStoreState();
     }
 
     renderProducts();
