@@ -46,6 +46,15 @@ const DEFAULT_SHIPPING = {
 };
 const PRODUCT_REFRESH_INTERVAL = 30000;
 
+const defaultStoreState = () => ({
+  cart: {},
+  favorites: [],
+  coupon: null,
+  cep: "",
+  payment: "pix",
+  shipping: { ...DEFAULT_SHIPPING },
+});
+
 const categoryLabel = {
   suplementos: "Suplementos",
   combos: "Combos",
@@ -58,12 +67,7 @@ const state = {
   category: "all",
   sort: "featured",
   favoriteOnly: false,
-  cart: {},
-  favorites: [],
-  coupon: null,
-  cep: "",
-  payment: "pix",
-  shipping: { ...DEFAULT_SHIPPING },
+  ...defaultStoreState(),
   admin: {
     authenticated: false,
     passwordHash: "",
@@ -351,12 +355,7 @@ function handleStorageEvent(event) {
     if (event.newValue) {
       loadStore();
     } else {
-      state.cart = {};
-      state.favorites = [];
-      state.coupon = null;
-      state.cep = "";
-      state.payment = "pix";
-      state.shipping = { ...DEFAULT_SHIPPING };
+      resetStoreState();
     }
 
     renderProducts();
@@ -368,6 +367,18 @@ function handleStorageEvent(event) {
     loadAdminStore();
     renderAdmin();
   }
+}
+
+function cleanupLiveSync() {
+  if (liveSyncIntervalId !== null) {
+    window.clearInterval(liveSyncIntervalId);
+    liveSyncIntervalId = null;
+  }
+
+  document.removeEventListener("visibilitychange", handleVisibilityChange);
+  window.removeEventListener("storage", handleStorageEvent);
+  window.removeEventListener("pagehide", cleanupLiveSync);
+  liveSyncStarted = false;
 }
 
 function setupLiveSync() {
@@ -382,6 +393,7 @@ function setupLiveSync() {
 
   document.addEventListener("visibilitychange", handleVisibilityChange);
   window.addEventListener("storage", handleStorageEvent);
+  window.addEventListener("pagehide", cleanupLiveSync);
 }
 
 function saveStore() {
@@ -418,6 +430,10 @@ function loadStore() {
   } catch (error) {
     localStorage.removeItem(STORAGE_KEY);
   }
+}
+
+function resetStoreState() {
+  Object.assign(state, defaultStoreState());
 }
 
 function formatCep(value) {
