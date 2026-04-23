@@ -45,6 +45,7 @@ const INITIAL_SHIPPING_STATE = {
   message: "Informe o CEP para simular entrega.",
 };
 const PRODUCT_REFRESH_INTERVAL = 30000;
+const MAX_VISIBLE_PRODUCTS = 3;
 
 const defaultStoreState = () => ({
   cart: {},
@@ -556,17 +557,20 @@ function toggleFavorite(productId) {
 
 function renderProducts() {
   const products = sortProducts(filterProducts());
+  const visibleProducts = products.slice(0, MAX_VISIBLE_PRODUCTS);
   refs.productGrid.innerHTML = "";
 
-  refs.resultsCount.textContent = `${products.length} produto(s) encontrado(s)`;
+  if (refs.resultsCount) {
+    refs.resultsCount.textContent = `${visibleProducts.length} produto(s) encontrado(s)`;
+  }
 
-  if (products.length === 0) {
+  if (visibleProducts.length === 0) {
     refs.productGrid.innerHTML =
       '<div class="empty-state">Nenhum produto encontrado com esse filtro.</div>';
     return;
   }
 
-  products.forEach((product) => {
+  visibleProducts.forEach((product) => {
     const node = refs.productTemplate.content.cloneNode(true);
     const image = node.querySelector("img");
     const category = node.querySelector(".card__category");
@@ -836,25 +840,33 @@ function checkout() {
 }
 
 function attachEvents() {
-  refs.searchInput.addEventListener("input", (event) => {
-    state.search = event.target.value;
-    renderProducts();
-  });
+  if (refs.searchInput) {
+    refs.searchInput.addEventListener("input", (event) => {
+      state.search = event.target.value;
+      renderProducts();
+    });
+  }
 
-  refs.categorySelect.addEventListener("change", (event) => {
-    state.category = event.target.value;
-    renderProducts();
-  });
+  if (refs.categorySelect) {
+    refs.categorySelect.addEventListener("change", (event) => {
+      state.category = event.target.value;
+      renderProducts();
+    });
+  }
 
-  refs.sortSelect.addEventListener("change", (event) => {
-    state.sort = event.target.value;
-    renderProducts();
-  });
+  if (refs.sortSelect) {
+    refs.sortSelect.addEventListener("change", (event) => {
+      state.sort = event.target.value;
+      renderProducts();
+    });
+  }
 
-  refs.favoriteOnly.addEventListener("change", (event) => {
-    state.favoriteOnly = event.target.checked;
-    renderProducts();
-  });
+  if (refs.favoriteOnly) {
+    refs.favoriteOnly.addEventListener("change", (event) => {
+      state.favoriteOnly = event.target.checked;
+      renderProducts();
+    });
+  }
 
   refs.openCart.addEventListener("click", openCart);
   refs.closeCart.addEventListener("click", closeCart);
