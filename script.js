@@ -37,7 +37,7 @@ const FALLBACK_PRODUCTS = [
 const STORAGE_KEY = "garra-fit-store-v2";
 const ADMIN_STORAGE_KEY = "garra-fit-admin-v1";
 const FREE_SHIPPING_THRESHOLD = 159;
-const WHATSAPP_NUMBER = "5581994002200";
+const WHATSAPP_NUMBER = "5516981855932";
 const DEFAULT_ADMIN_PASSWORD = "GarraFit#2026!";
 const INITIAL_SHIPPING_STATE = {
   price: 0,
