@@ -39,7 +39,7 @@ const ADMIN_STORAGE_KEY = "garra-fit-admin-v1";
 const FREE_SHIPPING_THRESHOLD = 159;
 const WHATSAPP_NUMBER = "5581994002200";
 const DEFAULT_ADMIN_PASSWORD = "GarraFit#2026!";
-const DEFAULT_SHIPPING = {
+const INITIAL_SHIPPING_STATE = {
   price: 0,
   region: "",
   message: "Informe o CEP para simular entrega.",
@@ -52,7 +52,7 @@ const defaultStoreState = () => ({
   coupon: null,
   cep: "",
   payment: "pix",
-  shipping: { ...DEFAULT_SHIPPING },
+  shipping: { ...INITIAL_SHIPPING_STATE },
 });
 
 const categoryLabel = {
@@ -325,12 +325,12 @@ function syncStateWithCatalog() {
   return changed;
 }
 
-async function refreshProducts({ force = false } = {}) {
+async function refreshProducts({ forceReload = false } = {}) {
   const latest = await loadProducts();
   const signature = getProductsSignature(latest);
 
-  if (!force && signature === productsSignature) {
-    return false;
+  if (!forceReload && signature === productsSignature) {
+    return;
   }
 
   state.products = latest;
@@ -338,7 +338,6 @@ async function refreshProducts({ force = false } = {}) {
   syncStateWithCatalog();
   renderProducts();
   renderCart();
-  return true;
 }
 
 let liveSyncStarted = false;
@@ -346,7 +345,7 @@ let liveSyncIntervalId = null;
 
 function handleVisibilityChange() {
   if (document.visibilityState === "visible") {
-    refreshProducts({ force: true });
+    refreshProducts({ forceReload: true });
   }
 }
 
@@ -355,7 +354,7 @@ function handleStorageEvent(event) {
     if (event.newValue) {
       loadStore();
     } else {
-      resetStoreState();
+      resetStoreState({ persist: true });
     }
 
     renderProducts();
@@ -426,14 +425,18 @@ function loadStore() {
     state.shipping =
       parsed.shipping && typeof parsed.shipping === "object"
         ? parsed.shipping
-        : { ...DEFAULT_SHIPPING };
+        : { ...INITIAL_SHIPPING_STATE };
   } catch (error) {
     localStorage.removeItem(STORAGE_KEY);
   }
 }
 
-function resetStoreState() {
+function resetStoreState({ persist = false } = {}) {
   Object.assign(state, defaultStoreState());
+
+  if (persist) {
+    saveStore();
+  }
 }
 
 function formatCep(value) {
