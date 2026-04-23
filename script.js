@@ -39,6 +39,21 @@ const ADMIN_STORAGE_KEY = "garra-fit-admin-v1";
 const FREE_SHIPPING_THRESHOLD = 159;
 const WHATSAPP_NUMBER = "5581994002200";
 const DEFAULT_ADMIN_PASSWORD = "GarraFit#2026!";
+const INITIAL_SHIPPING_STATE = {
+  price: 0,
+  region: "",
+  message: "Informe o CEP para simular entrega.",
+};
+const PRODUCT_REFRESH_INTERVAL = 30000;
+
+const defaultStoreState = () => ({
+  cart: {},
+  favorites: [],
+  coupon: null,
+  cep: "",
+  payment: "pix",
+  shipping: { ...INITIAL_SHIPPING_STATE },
+});
 
 const categoryLabel = {
   suplementos: "Suplementos",
@@ -52,16 +67,7 @@ const state = {
   category: "all",
   sort: "featured",
   favoriteOnly: false,
-  cart: {},
-  favorites: [],
-  coupon: null,
-  cep: "",
-  payment: "pix",
-  shipping: {
-    price: 0,
-    region: "",
-    message: "Informe o CEP para simular entrega.",
-  },
+  ...defaultStoreState(),
   admin: {
     authenticated: false,
     passwordHash: "",
@@ -262,6 +268,156 @@ async function loadProducts() {
   }
 }
 
+let productsSignature = "";
+
+function getProductsSignature(products) {
+  return JSON.stringify(
+    products.map((product) => ({
+      id: product.id,
+      name: product.name,
+      category: product.category,
+      description: product.description,
+      price: product.price,
+      stock: product.stock,
+      featured: product.featured,
+      image: product.image,
+    }))
+  );
+}
+
+function syncStateWithCatalog() {
+  const productMap = new Map(state.products.map((product) => [product.id, product]));
+  let changed = false;
+
+  Object.keys(state.cart).forEach((productId) => {
+    const product = productMap.get(productId);
+
+    if (!product) {
+      delete state.cart[productId];
+      changed = true;
+      return;
+    }
+
+    const nextQty = Math.min(product.stock, state.cart[productId]);
+
+    if (nextQty <= 0) {
+      delete state.cart[productId];
+      changed = true;
+      return;
+    }
+
+    if (nextQty !== state.cart[productId]) {
+      state.cart[productId] = nextQty;
+      changed = true;
+    }
+  });
+
+  const filteredFavorites = state.favorites.filter((id) => productMap.has(id));
+  if (filteredFavorites.length !== state.favorites.length) {
+    state.favorites = filteredFavorites;
+    changed = true;
+  }
+
+  if (changed) {
+    saveStore();
+  }
+
+  return changed;
+}
+
+async function refreshProducts({ forceReload = false } = {}) {
+  const latest = await loadProducts();
+  const signature = getProductsSignature(latest);
+
+  if (!forceReload && signature === productsSignature) {
+    lastProductsSync = Date.now();
+    return;
+  }
+
+  state.products = latest;
+  productsSignature = signature;
+  lastProductsSync = Date.now();
+  syncStateWithCatalog();
+  renderProducts();
+  renderCart();
+}
+
+let liveSyncStarted = false;
+let liveSyncIntervalId = null;
+let lastProductsSync = 0;
+
+function handleVisibilityChange() {
+  if (document.visibilityState === "visible") {
+    startProductInterval();
+
+    if (Date.now() - lastProductsSync > PRODUCT_REFRESH_INTERVAL) {
+      refreshProducts({ forceReload: true });
+    }
+  } else {
+    stopProductInterval();
+  }
+}
+
+function handleStorageEvent(event) {
+  if (event.key === STORAGE_KEY) {
+    if (event.newValue) {
+      loadStore();
+    } else {
+      resetStoreState();
+    }
+
+    renderProducts();
+    renderCart();
+    return;
+  }
+
+  if (event.key === ADMIN_STORAGE_KEY) {
+    loadAdminStore();
+    renderAdmin();
+  }
+}
+
+function startProductInterval() {
+  if (liveSyncIntervalId !== null) {
+    return;
+  }
+
+  liveSyncIntervalId = window.setInterval(() => {
+    refreshProducts();
+  }, PRODUCT_REFRESH_INTERVAL);
+}
+
+function stopProductInterval() {
+  if (liveSyncIntervalId === null) {
+    return;
+  }
+
+  window.clearInterval(liveSyncIntervalId);
+  liveSyncIntervalId = null;
+}
+
+function cleanupLiveSync() {
+  stopProductInterval();
+
+  document.removeEventListener("visibilitychange", handleVisibilityChange);
+  window.removeEventListener("storage", handleStorageEvent);
+  window.removeEventListener("pagehide", cleanupLiveSync);
+  liveSyncStarted = false;
+}
+
+function setupLiveSync() {
+  if (liveSyncStarted) {
+    return;
+  }
+
+  liveSyncStarted = true;
+  startProductInterval();
+
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  window.addEventListener("storage", handleStorageEvent);
+  window.addEventListener("pagehide", cleanupLiveSync);
+}
+
 function saveStore() {
   const payload = {
     cart: state.cart,
@@ -289,9 +445,20 @@ function loadStore() {
     state.coupon = typeof parsed.coupon === "string" ? parsed.coupon : null;
     state.cep = typeof parsed.cep === "string" ? parsed.cep : "";
     state.payment = parsed.payment || "pix";
-    state.shipping = parsed.shipping || state.shipping;
+    state.shipping =
+      parsed.shipping && typeof parsed.shipping === "object"
+        ? parsed.shipping
+        : { ...INITIAL_SHIPPING_STATE };
   } catch (error) {
     localStorage.removeItem(STORAGE_KEY);
+  }
+}
+
+function resetStoreState({ persist = false } = {}) {
+  Object.assign(state, defaultStoreState());
+
+  if (persist) {
+    saveStore();
   }
 }
 
@@ -730,6 +897,9 @@ async function init() {
   loadStore();
   loadAdminStore();
   state.products = await loadProducts();
+  productsSignature = getProductsSignature(state.products);
+  syncStateWithCatalog();
+  lastProductsSync = Date.now();
 
   refs.couponInput.value = state.coupon || "";
   refs.cepInput.value = state.cep;
@@ -739,6 +909,7 @@ async function init() {
   attachEvents();
   renderProducts();
   renderCart();
+  setupLiveSync();
 }
 
 init();

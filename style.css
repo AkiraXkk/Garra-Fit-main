@@ -5,6 +5,8 @@
   --sunset-700: #b84f0c;
   --teal-500: #0a8e95;
   --teal-700: #045c63;
+  --forest-900: #0b3d2e;
+  --forest-800: #0f4a35;
   --ink-900: #1e2a2f;
   --ink-700: #39505a;
   --line: rgba(44, 58, 64, 0.16);
@@ -57,11 +59,12 @@ main {
   align-items: center;
   justify-content: space-between;
   padding: 0.8rem 1rem;
-  background: rgba(255, 255, 255, 0.78);
+  background: linear-gradient(135deg, var(--forest-900), var(--forest-800));
   backdrop-filter: blur(8px);
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 16px;
   box-shadow: var(--shadow);
+  color: #f5faf7;
 }
 
 .brand {
@@ -100,6 +103,12 @@ main {
   align-items: center;
   gap: 0.55rem;
   cursor: pointer;
+}
+
+.topbar .icon-btn {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
 }
 
 .icon-btn--small {
