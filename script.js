@@ -39,6 +39,12 @@ const ADMIN_STORAGE_KEY = "garra-fit-admin-v1";
 const FREE_SHIPPING_THRESHOLD = 159;
 const WHATSAPP_NUMBER = "5581994002200";
 const DEFAULT_ADMIN_PASSWORD = "GarraFit#2026!";
+const DEFAULT_SHIPPING = {
+  price: 0,
+  region: "",
+  message: "Informe o CEP para simular entrega.",
+};
+const PRODUCT_REFRESH_INTERVAL = 30000;
 
 const categoryLabel = {
   suplementos: "Suplementos",
@@ -57,11 +63,7 @@ const state = {
   coupon: null,
   cep: "",
   payment: "pix",
-  shipping: {
-    price: 0,
-    region: "",
-    message: "Informe o CEP para simular entrega.",
-  },
+  shipping: { ...DEFAULT_SHIPPING },
   admin: {
     authenticated: false,
     passwordHash: "",
@@ -262,6 +264,115 @@ async function loadProducts() {
   }
 }
 
+let productsSignature = "";
+
+function getProductsSignature(products) {
+  return JSON.stringify(
+    products.map((product) => ({
+      id: product.id,
+      name: product.name,
+      category: product.category,
+      description: product.description,
+      price: product.price,
+      stock: product.stock,
+      featured: product.featured,
+      image: product.image,
+    }))
+  );
+}
+
+function syncStateWithCatalog() {
+  const productMap = new Map(state.products.map((product) => [product.id, product]));
+  let changed = false;
+
+  Object.keys(state.cart).forEach((productId) => {
+    const product = productMap.get(productId);
+
+    if (!product) {
+      delete state.cart[productId];
+      changed = true;
+      return;
+    }
+
+    const nextQty = Math.min(product.stock, state.cart[productId]);
+
+    if (nextQty <= 0) {
+      delete state.cart[productId];
+      changed = true;
+      return;
+    }
+
+    if (nextQty !== state.cart[productId]) {
+      state.cart[productId] = nextQty;
+      changed = true;
+    }
+  });
+
+  const filteredFavorites = state.favorites.filter((id) => productMap.has(id));
+  if (filteredFavorites.length !== state.favorites.length) {
+    state.favorites = filteredFavorites;
+    changed = true;
+  }
+
+  if (changed) {
+    saveStore();
+  }
+
+  return changed;
+}
+
+async function refreshProducts({ force = false } = {}) {
+  const latest = await loadProducts();
+  const signature = getProductsSignature(latest);
+
+  if (!force && signature === productsSignature) {
+    return false;
+  }
+
+  state.products = latest;
+  productsSignature = signature;
+  syncStateWithCatalog();
+  renderProducts();
+  renderCart();
+  return true;
+}
+
+function setupLiveSync() {
+  window.setInterval(() => {
+    refreshProducts();
+  }, PRODUCT_REFRESH_INTERVAL);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      refreshProducts({ force: true });
+    }
+  });
+
+  window.addEventListener("storage", (event) => {
+    if (event.key === STORAGE_KEY) {
+      if (event.newValue) {
+        loadStore();
+      } else {
+        state.cart = {};
+        state.favorites = [];
+        state.coupon = null;
+        state.cep = "";
+        state.payment = "pix";
+        state.shipping = { ...DEFAULT_SHIPPING };
+      }
+
+      renderProducts();
+      renderCart();
+      return;
+    }
+
+    if (event.key === ADMIN_STORAGE_KEY) {
+      loadAdminStore();
+      renderAdmin();
+    }
+  });
+}
+
 function saveStore() {
   const payload = {
     cart: state.cart,
@@ -289,7 +400,10 @@ function loadStore() {
     state.coupon = typeof parsed.coupon === "string" ? parsed.coupon : null;
     state.cep = typeof parsed.cep === "string" ? parsed.cep : "";
     state.payment = parsed.payment || "pix";
-    state.shipping = parsed.shipping || state.shipping;
+    state.shipping =
+      parsed.shipping && typeof parsed.shipping === "object"
+        ? parsed.shipping
+        : { ...DEFAULT_SHIPPING };
   } catch (error) {
     localStorage.removeItem(STORAGE_KEY);
   }
@@ -730,6 +844,8 @@ async function init() {
   loadStore();
   loadAdminStore();
   state.products = await loadProducts();
+  productsSignature = getProductsSignature(state.products);
+  syncStateWithCatalog();
 
   refs.couponInput.value = state.coupon || "";
   refs.cepInput.value = state.cep;
@@ -739,6 +855,7 @@ async function init() {
   attachEvents();
   renderProducts();
   renderCart();
+  setupLiveSync();
 }
 
 init();
