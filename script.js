@@ -337,40 +337,51 @@ async function refreshProducts({ force = false } = {}) {
   return true;
 }
 
+let liveSyncStarted = false;
+let liveSyncIntervalId = null;
+
+function handleVisibilityChange() {
+  if (document.visibilityState === "visible") {
+    refreshProducts({ force: true });
+  }
+}
+
+function handleStorageEvent(event) {
+  if (event.key === STORAGE_KEY) {
+    if (event.newValue) {
+      loadStore();
+    } else {
+      state.cart = {};
+      state.favorites = [];
+      state.coupon = null;
+      state.cep = "";
+      state.payment = "pix";
+      state.shipping = { ...DEFAULT_SHIPPING };
+    }
+
+    renderProducts();
+    renderCart();
+    return;
+  }
+
+  if (event.key === ADMIN_STORAGE_KEY) {
+    loadAdminStore();
+    renderAdmin();
+  }
+}
+
 function setupLiveSync() {
-  window.setInterval(() => {
+  if (liveSyncStarted) {
+    return;
+  }
+
+  liveSyncStarted = true;
+  liveSyncIntervalId = window.setInterval(() => {
     refreshProducts();
   }, PRODUCT_REFRESH_INTERVAL);
 
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-      refreshProducts({ force: true });
-    }
-  });
-
-  window.addEventListener("storage", (event) => {
-    if (event.key === STORAGE_KEY) {
-      if (event.newValue) {
-        loadStore();
-      } else {
-        state.cart = {};
-        state.favorites = [];
-        state.coupon = null;
-        state.cep = "";
-        state.payment = "pix";
-        state.shipping = { ...DEFAULT_SHIPPING };
-      }
-
-      renderProducts();
-      renderCart();
-      return;
-    }
-
-    if (event.key === ADMIN_STORAGE_KEY) {
-      loadAdminStore();
-      renderAdmin();
-    }
-  });
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  window.addEventListener("storage", handleStorageEvent);
 }
 
 function saveStore() {
