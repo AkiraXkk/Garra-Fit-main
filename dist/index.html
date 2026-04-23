@@ -11,15 +11,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Oswald:wght@600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&display=swap"
       rel="stylesheet"
     />
-    <script type="module" crossorigin src="/assets/index-CssfUFiu.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CgPRoGse.css">
+    <link
+      rel="icon"
+      href="https://github.com/user-attachments/assets/ed2db707-c3da-4697-8acd-cce695e2df78"
+    />
+    <script type="module" crossorigin src="/assets/index-CYMHx_io.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Bn_5ro32.css">
   </head>
   <body>
-    <div class="grain" aria-hidden="true"></div>
-
     <header class="topbar">
       <a href="#" class="brand" aria-label="Início Garra Fit">
         <span class="brand__mark">
@@ -45,29 +47,31 @@
     <main>
       <section class="hero">
         <div class="hero__content">
-          <p class="hero__kicker">Entrega em Gravatá e região</p>
-          <h1>Suplementos de verdade para resultados de verdade.</h1>
+          <span class="hero__tag">Energia • Força • Performance</span>
+          <h1>Suplementos que elevam o seu treino.</h1>
           <p>
-            Monte seu pedido em segundos, aplique cupom e finalize no WhatsApp.
-            Tudo em uma experiência rápida e funcional.
+            Selecione o produto ideal, finalize no WhatsApp e receba com agilidade. Tudo em um
+            layout direto e agressivo.
           </p>
           <div class="hero__cta-row">
             <a href="#produtos" class="cta cta--primary">Ver produtos</a>
-            <button class="cta cta--ghost" id="scrollToOffers" type="button">Ofertas do dia</button>
+            <button class="cta cta--ghost" id="scrollToOffers" type="button">Falar com a equipe</button>
           </div>
         </div>
         <div class="hero__panel" aria-hidden="true">
-          <h2>10% OFF no PIX</h2>
-          <p>Frete grátis acima de R$ 159 em Gravatá.</p>
-          <ul>
-            <li>Whey, Creatina e Pré-treino</li>
-            <li>Kits para ganho de massa</li>
-            <li>Acessórios de treino</li>
-          </ul>
+          <div class="hero__logo">
+            <img
+              src="https://github.com/user-attachments/assets/ed2db707-c3da-4697-8acd-cce695e2df78"
+              alt="Logo Garra Fit"
+            />
+          </div>
+          <h2>WhatsApp direto</h2>
+          <p>(16) 98185-5932</p>
+          <span>Entrega rápida e estoque atualizado.</span>
         </div>
       </section>
 
-      <section class="controls" id="produtos" aria-label="Filtros de produtos">
+      <section class="controls" aria-label="Filtros de produtos" hidden>
         <label class="controls__field">
           <span>Buscar produto</span>
           <input type="search" id="searchInput" placeholder="Ex: whey, creatina, kit" />
@@ -99,11 +103,61 @@
         </label>
       </section>
 
-      <section aria-live="polite">
-        <p class="results" id="resultsCount">0 produtos encontrados</p>
+      <section class="products" id="produtos" aria-live="polite">
+        <header class="products__header">
+          <div>
+            <p class="products__eyebrow">Produtos em destaque</p>
+            <h2>Escolha o seu combo favorito</h2>
+            <p class="products__subtitle">
+              Apenas 3 seleções premium para acelerar seus resultados.
+            </p>
+          </div>
+          <div class="products__contact">
+            <span>Atendimento imediato</span>
+            <strong>(16) 98185-5932</strong>
+          </div>
+        </header>
+        <p class="results results--hidden" id="resultsCount">0 produtos encontrados</p>
         <div class="products-grid" id="productGrid"></div>
       </section>
     </main>
+
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <div class="site-footer__brand">
+          <div class="brand__mark">
+            <img
+              src="https://github.com/user-attachments/assets/ed2db707-c3da-4697-8acd-cce695e2df78"
+              alt="Logo Garra Fit"
+            />
+          </div>
+          <div>
+            <strong>Garra Fit</strong>
+            <p>Suplementos e acessórios para quem vive performance.</p>
+          </div>
+        </div>
+        <div class="site-footer__columns">
+          <div>
+            <h3>Contato</h3>
+            <p>WhatsApp: (16) 98185-5932</p>
+            <p>Atendimento diário das 08h às 22h</p>
+          </div>
+          <div>
+            <h3>Entrega</h3>
+            <p>Frete rápido para Gravatá e região</p>
+            <p>Envios nacionais em até 48h úteis</p>
+          </div>
+          <div>
+            <h3>Segurança</h3>
+            <p>Pagamento via PIX, crédito ou débito</p>
+            <p>Pedidos protegidos com confirmação imediata</p>
+          </div>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <span>© 2026 Garra Fit. Todos os direitos reservados.</span>
+      </div>
+    </footer>
 
     <aside class="cart" id="cart" aria-label="Carrinho de compras" aria-hidden="true">
       <div class="cart__header">
