@@ -7,9 +7,11 @@ const deleteSafely = async (message) => {
   try {
     await message.delete();
   } catch (error) {
-    if (error?.code !== 10008) {
+    if (error?.code === 10008) {
       return;
     }
+
+    console.warn("Falha ao deletar mensagem no image lock.", error);
   }
 };
 
