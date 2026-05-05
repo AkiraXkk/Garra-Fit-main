@@ -488,7 +488,7 @@ function getMockShippingByUf(uf) {
     return { price: 35, days: 7, region: "Nordeste" };
   }
 
-  return { price: 25, days: 5, region: "Demais regioes" };
+  return { price: 25, days: 5, region: "Demais regiões" };
 }
 
 async function getShippingByCep(cepDigits) {
@@ -528,7 +528,7 @@ async function getShippingByCep(cepDigits) {
     return {
       price: 0,
       region: "",
-      message: "Nao foi possivel calcular o frete. Confira o CEP.",
+      message: "Não foi possível calcular o frete. Confira o CEP.",
     };
   }
 }
@@ -844,6 +844,7 @@ async function calculateShipping() {
       message: "Calculando frete...",
     };
     renderCart();
+    await new Promise((resolve) => requestAnimationFrame(resolve));
   }
 
   state.shipping = await getShippingByCep(cepDigits);
