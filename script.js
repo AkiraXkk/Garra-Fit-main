@@ -3,34 +3,36 @@ const DEFAULT_IMAGE =
 
 const FALLBACK_PRODUCTS = [
   {
-    id: "whey-900",
-    name: "Whey Protein 900g",
-    category: "suplementos",
-    description: "Blend proteico para recuperacao muscular e ganho de massa.",
-    price: 135,
-    stock: 11,
+    id: "kit-1",
+    name: "Kit 1 (1 Unidade)",
+    category: "kits",
+    description: "1 unidade para iniciar o ciclo com praticidade.",
+    price: 64.99,
+    stock: 24,
     featured: 1,
-    image: DEFAULT_IMAGE,
+    image: "https://github.com/user-attachments/assets/bd39c2c9-17fd-4f6b-a503-eaa0fc8a891e",
   },
   {
-    id: "creatina-300",
-    name: "Creatina Monohidratada 300g",
-    category: "suplementos",
-    description: "Potencia e resistencia para treinos intensos.",
-    price: 89.9,
-    stock: 16,
+    id: "kit-2",
+    name: "Kit 2 (2 Unidades)",
+    category: "kits",
+    description: "Mais procurado para quem quer evoluir rapido.",
+    price: 109.99,
+    stock: 18,
     featured: 2,
-    image: DEFAULT_IMAGE,
+    badge: "Mais Vendido",
+    image: "https://github.com/user-attachments/assets/5c10d503-be86-4332-b87f-a895306e25a3",
   },
   {
-    id: "pre-treino",
-    name: "Pre-Treino Insano 300g",
-    category: "suplementos",
-    description: "Foco e energia para iniciar o treino no maximo.",
-    price: 78,
-    stock: 9,
+    id: "kit-3",
+    name: "Kit 3 (3 Unidades)",
+    category: "kits",
+    description: "Melhor custo-beneficio para uso continuo.",
+    price: 159.99,
+    stock: 12,
     featured: 3,
-    image: DEFAULT_IMAGE,
+    badge: "Melhor Custo-Benefício",
+    image: "https://github.com/user-attachments/assets/147d688f-9191-438c-8f1c-d02cb54b7fd5",
   },
 ];
 
@@ -46,6 +48,7 @@ const INITIAL_SHIPPING_STATE = {
 };
 const PRODUCT_REFRESH_INTERVAL = 30000;
 const MAX_VISIBLE_PRODUCTS = 3;
+const NORTHEAST_UFS = new Set(["AL", "BA", "CE", "MA", "PB", "PE", "PI", "RN", "SE"]);
 
 const defaultStoreState = () => ({
   cart: {},
@@ -60,6 +63,7 @@ const categoryLabel = {
   suplementos: "Suplementos",
   combos: "Combos",
   acessorios: "Acessorios",
+  kits: "Kits",
 };
 
 const state = {
@@ -245,6 +249,7 @@ function normalizeProduct(item, index) {
     price: Number(item.price || 0),
     stock: Number(item.stock || 0),
     featured: Number(item.featured || index + 1),
+    badge: item.badge ? String(item.badge) : "",
     image: String(item.image || DEFAULT_IMAGE),
   };
 }
@@ -281,6 +286,7 @@ function getProductsSignature(products) {
       price: product.price,
       stock: product.stock,
       featured: product.featured,
+      badge: product.badge,
       image: product.image,
     }))
   );
@@ -473,7 +479,19 @@ function formatCep(value) {
   return `${digits.slice(0, 5)}-${digits.slice(5)}`;
 }
 
-function getShippingByCep(cepDigits) {
+function getMockShippingByUf(uf) {
+  if (uf === "SP") {
+    return { price: 15, days: 3, region: "Sudeste" };
+  }
+
+  if (NORTHEAST_UFS.has(uf)) {
+    return { price: 35, days: 7, region: "Nordeste" };
+  }
+
+  return { price: 25, days: 5, region: "Demais regioes" };
+}
+
+async function getShippingByCep(cepDigits) {
   if (cepDigits.length !== 8) {
     return {
       price: 0,
@@ -482,27 +500,37 @@ function getShippingByCep(cepDigits) {
     };
   }
 
-  if (cepDigits.startsWith("5564")) {
+  try {
+    const response = await fetch(`https://viacep.com.br/ws/${cepDigits}/json/`);
+
+    if (!response.ok) {
+      throw new Error("Falha ao consultar CEP");
+    }
+
+    const data = await response.json();
+
+    if (data.erro) {
+      throw new Error("CEP nao encontrado");
+    }
+
+    const city = data.localidade || "Cidade";
+    const uf = data.uf || "UF";
+    const { price, days, region } = getMockShippingByUf(uf);
+
+    return {
+      price,
+      region,
+      message: `Entrega para ${city}-${uf}: PAC (${days} dias) - ${currency.format(
+        price
+      )}`,
+    };
+  } catch (error) {
     return {
       price: 0,
-      region: "Gravata",
-      message: "Entrega local em Gravata: frete gratis.",
+      region: "",
+      message: "Nao foi possivel calcular o frete. Confira o CEP.",
     };
   }
-
-  if (cepDigits.startsWith("55")) {
-    return {
-      price: 8.9,
-      region: "Pernambuco",
-      message: "Entrega para Pernambuco: frete reduzido.",
-    };
-  }
-
-  return {
-    price: 18.9,
-    region: "Demais regioes",
-    message: "Entrega nacional ativa para este CEP.",
-  };
 }
 
 function filterProducts() {
@@ -573,6 +601,7 @@ function renderProducts() {
   visibleProducts.forEach((product) => {
     const node = refs.productTemplate.content.cloneNode(true);
     const image = node.querySelector("img");
+    const badge = node.querySelector(".card__badge");
     const category = node.querySelector(".card__category");
     const title = node.querySelector(".card__title");
     const description = node.querySelector(".card__description");
@@ -588,6 +617,12 @@ function renderProducts() {
     description.textContent = product.description;
     price.textContent = currency.format(product.price);
     stock.textContent = `${product.stock} em estoque`;
+
+    if (badge) {
+      const hasBadge = Boolean(product.badge);
+      badge.textContent = product.badge || "";
+      badge.hidden = !hasBadge;
+    }
 
     const isFavorite = state.favorites.includes(product.id);
     favoriteBtn.textContent = isFavorite ? "★ Favoritado" : "☆ Favoritar";
@@ -799,9 +834,19 @@ function applyCoupon() {
   renderCart();
 }
 
-function calculateShipping() {
+async function calculateShipping() {
   const cepDigits = state.cep.replace(/\D/g, "");
-  state.shipping = getShippingByCep(cepDigits);
+
+  if (cepDigits.length === 8) {
+    state.shipping = {
+      ...state.shipping,
+      price: 0,
+      message: "Calculando frete...",
+    };
+    renderCart();
+  }
+
+  state.shipping = await getShippingByCep(cepDigits);
   saveStore();
   renderCart();
 }
@@ -891,7 +936,9 @@ function attachEvents() {
     saveStore();
   });
 
-  refs.calcShipping.addEventListener("click", calculateShipping);
+  refs.calcShipping.addEventListener("click", () => {
+    void calculateShipping();
+  });
 
   refs.paymentSelect.addEventListener("change", (event) => {
     state.payment = event.target.value;

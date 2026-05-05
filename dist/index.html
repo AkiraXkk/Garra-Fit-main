@@ -18,8 +18,8 @@
       rel="icon"
       href="https://github.com/user-attachments/assets/ed2db707-c3da-4697-8acd-cce695e2df78"
     />
-    <script type="module" crossorigin src="/assets/index-B9BTVbdg.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BxeZ3bj3.css">
+    <script type="module" crossorigin src="/assets/index-DDuaVy1V.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DX7O-PWI.css">
   </head>
   <body>
     <header class="topbar">
@@ -143,7 +143,7 @@
           <input id="cepInput" type="text" placeholder="Ex: 55641-230" maxlength="9" />
         </label>
         <button class="cta cta--ghost" id="calcShipping" type="button">Calcular frete</button>
-        <p class="shipping-note" id="shippingNote">Informe o CEP para simular entrega.</p>
+        <div class="shipping-note" id="shippingNote">Informe o CEP para simular entrega.</div>
 
         <label class="coupon-field" for="paymentSelect">
           Pagamento
@@ -226,6 +226,7 @@
     <template id="productTemplate">
       <article class="card">
         <figure class="card__media">
+          <span class="card__badge" hidden></span>
           <img loading="lazy" alt="" />
         </figure>
         <div class="card__body">
@@ -237,7 +238,7 @@
             <p class="card__stock"></p>
           </div>
           <button class="favorite-btn" type="button" aria-label="Favoritar produto">☆ Favoritar</button>
-          <button class="cta cta--primary card__button" type="button">Adicionar</button>
+          <button class="cta cta--primary card__button" type="button">Comprar</button>
         </div>
       </article>
     </template>
