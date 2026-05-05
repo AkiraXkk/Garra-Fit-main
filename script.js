@@ -848,7 +848,6 @@ async function calculateShipping() {
       message: "Calculando frete...",
     };
     renderCart();
-    await new Promise((resolve) => requestAnimationFrame(resolve));
   }
 
   state.shipping = await getShippingByCep(cepDigits);
