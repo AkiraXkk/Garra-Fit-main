@@ -839,16 +839,6 @@ function applyCoupon() {
 
 async function calculateShipping() {
   const cepDigits = state.cep.replace(/\D/g, "");
-
-  if (cepDigits.length === 8) {
-    state.shipping = {
-      ...state.shipping,
-      price: 0,
-      message: "Calculando frete...",
-    };
-    renderCart();
-  }
-
   state.shipping = await getShippingByCep(cepDigits);
   saveStore();
   renderCart();
