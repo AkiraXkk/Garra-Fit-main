@@ -519,13 +519,13 @@ async function getShippingByCep(cepDigits) {
 
     const city = data.localidade || "Cidade";
     const uf = data.uf || "UF";
-    const { price, days, region } = getMockShippingByUf(uf);
+    const shipping = getMockShippingByUf(uf);
 
     return {
-      price,
-      region,
-      message: `Entrega para ${city}-${uf}: PAC (${days} dias) - ${currency.format(
-        price
+      price: shipping.price,
+      region: shipping.region,
+      message: `Entrega para ${city}-${uf}: PAC (${shipping.days} dias) - ${currency.format(
+        shipping.price
       )}`,
     };
   } catch (error) {
@@ -623,9 +623,8 @@ function renderProducts() {
     stock.textContent = `${product.stock} em estoque`;
 
     if (badge) {
-      const hasBadge = Boolean(product.badge);
       badge.textContent = product.badge || "";
-      badge.hidden = !hasBadge;
+      badge.hidden = !product.badge;
     }
 
     const isFavorite = state.favorites.includes(product.id);
