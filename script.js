@@ -488,7 +488,7 @@ function getMockShippingByUf(uf) {
     return { price: 35, days: 7, region: "Nordeste" };
   }
 
-  return { price: 25, days: 5, region: "Demais regiões" };
+  return { price: 25, days: 5, region: "Demais regioes" };
 }
 
 async function getShippingByCep(cepDigits) {
@@ -839,6 +839,11 @@ function applyCoupon() {
 
 async function calculateShipping() {
   const cepDigits = state.cep.replace(/\D/g, "");
+
+  if (cepDigits.length === 8) {
+    refs.shippingNote.textContent = "Calculando frete...";
+  }
+
   state.shipping = await getShippingByCep(cepDigits);
   saveStore();
   renderCart();
@@ -930,7 +935,14 @@ function attachEvents() {
   });
 
   refs.calcShipping.addEventListener("click", () => {
-    void calculateShipping();
+    calculateShipping().catch(() => {
+      state.shipping = {
+        ...INITIAL_SHIPPING_STATE,
+        message: "Erro ao calcular o frete.",
+      };
+      saveStore();
+      renderCart();
+    });
   });
 
   refs.paymentSelect.addEventListener("change", (event) => {
