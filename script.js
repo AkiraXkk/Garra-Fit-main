@@ -510,7 +510,11 @@ async function getShippingByCep(cepDigits) {
     const data = await response.json();
 
     if (data.erro) {
-      throw new Error("CEP nao encontrado");
+      return {
+        price: 0,
+        region: "",
+        message: "CEP não encontrado.",
+      };
     }
 
     const city = data.localidade || "Cidade";
@@ -528,7 +532,7 @@ async function getShippingByCep(cepDigits) {
     return {
       price: 0,
       region: "",
-      message: "Não foi possível calcular o frete. Confira o CEP.",
+      message: "Erro ao consultar o CEP. Tente novamente.",
     };
   }
 }
