@@ -1,102 +1,34 @@
 [
   {
-    "id": "whey-900",
-    "name": "Whey Protein 900g",
-    "category": "suplementos",
-    "description": "Blend proteico para recuperacao muscular e ganho de massa.",
-    "price": 135,
-    "stock": 11,
+    "id": "kit-1",
+    "name": "Kit 1 (1 Unidade)",
+    "category": "kits",
+    "description": "1 unidade para iniciar o ciclo com praticidade.",
+    "price": 64.99,
+    "stock": 24,
     "featured": 1,
-    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
+    "image": "https://github.com/user-attachments/assets/bd39c2c9-17fd-4f6b-a503-eaa0fc8a891e"
   },
   {
-    "id": "creatina-300",
-    "name": "Creatina Monohidratada 300g",
-    "category": "suplementos",
-    "description": "Potencia e resistencia para treinos intensos.",
-    "price": 89.9,
-    "stock": 16,
-    "featured": 2,
-    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
-  },
-  {
-    "id": "pre-treino-300",
-    "name": "Pre-Treino Insano 300g",
-    "category": "suplementos",
-    "description": "Foco e energia para iniciar o treino no maximo.",
-    "price": 78,
-    "stock": 9,
-    "featured": 3,
-    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
-  },
-  {
-    "id": "bcaa-4-1-1",
-    "name": "BCAA 4:1:1 120 caps",
-    "category": "suplementos",
-    "description": "Auxilia na recuperacao muscular e protecao contra catabolismo.",
-    "price": 62.5,
-    "stock": 14,
-    "featured": 4,
-    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
-  },
-  {
-    "id": "combo-massa",
-    "name": "Combo Ganho de Massa",
-    "category": "combos",
-    "description": "Whey + Creatina + Coqueteleira com desconto especial.",
-    "price": 249.9,
-    "stock": 7,
-    "featured": 5,
-    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
-  },
-  {
-    "id": "combo-definicao",
-    "name": "Combo Definicao",
-    "category": "combos",
-    "description": "Termogenico + Whey Isolado para acelerar resultados.",
-    "price": 269,
-    "stock": 6,
-    "featured": 6,
-    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
-  },
-  {
-    "id": "combo-energia",
-    "name": "Combo Energia e Resistencia",
-    "category": "combos",
-    "description": "Pre-treino + BCAA + Garra Bottle para treinos longos.",
-    "price": 189,
-    "stock": 8,
-    "featured": 7,
-    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
-  },
-  {
-    "id": "coqueteleira-pro",
-    "name": "Coqueteleira Pro 700ml",
-    "category": "acessorios",
-    "description": "Sem vazamentos, resistente e ideal para o dia a dia.",
-    "price": 39.9,
-    "stock": 20,
-    "featured": 8,
-    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
-  },
-  {
-    "id": "strap-power",
-    "name": "Strap de Levantamento",
-    "category": "acessorios",
-    "description": "Mais firmeza para puxadas e levantamento terra.",
-    "price": 29.9,
+    "id": "kit-2",
+    "name": "Kit 2 (2 Unidades)",
+    "category": "kits",
+    "description": "Mais procurado para quem quer evoluir rapido.",
+    "price": 109.99,
     "stock": 18,
-    "featured": 9,
-    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
+    "featured": 2,
+    "badge": "Mais Vendido",
+    "image": "https://github.com/user-attachments/assets/5c10d503-be86-4332-b87f-a895306e25a3"
   },
   {
-    "id": "luva-grip",
-    "name": "Luva Grip Cross",
-    "category": "acessorios",
-    "description": "Conforto e protecao para treinos pesados.",
-    "price": 49.9,
-    "stock": 13,
-    "featured": 10,
-    "image": "https://github.com/user-attachments/assets/e77df1c0-444c-499e-93e8-8320e75c16a0"
+    "id": "kit-3",
+    "name": "Kit 3 (3 Unidades)",
+    "category": "kits",
+    "description": "Melhor custo-beneficio para uso continuo.",
+    "price": 159.99,
+    "stock": 12,
+    "featured": 3,
+    "badge": "Melhor Custo-Benefício",
+    "image": "https://github.com/user-attachments/assets/147d688f-9191-438c-8f1c-d02cb54b7fd5"
   }
 ]
